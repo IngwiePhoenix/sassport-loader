@@ -8,6 +8,7 @@ var fs = require('fs');
 var async = require('async');
 var merge = require('merge').recursive;
 var requireFresh = require("requirefresh");
+var createSassportImporter = require("sassport/dist/importer").default;
 
 // A typical sass error looks like this
 var SassError = {
@@ -41,6 +42,7 @@ module.exports = function (content) {
     var query = utils.parseQuery(this.query);
     var result;
     var opt;
+    var sassportImporter;
 
     // Allow passing "programmable objects" (e.g. importers) via custom `this.options` field.
     // http://webpack.github.io/docs/how-to-write-a-loader.html#programmable-objects-as-query-option
@@ -99,7 +101,7 @@ module.exports = function (content) {
                 request = utils.urlToRequest(url, opt.root);
                 dirContext = fileToDirContext(fileContext);
 
-                return resolveSync(dirContext, url, getImportsToResolve(request));
+                return resolveSync(dirContext, fileContext, url, getImportsToResolve(request));
             };
         }
         return function asyncWebpackImporter(url, fileContext, done) {
@@ -111,7 +113,7 @@ module.exports = function (content) {
             request = utils.urlToRequest(url, opt.root);
             dirContext = fileToDirContext(fileContext);
 
-            resolve(dirContext, url, getImportsToResolve(request), done);
+            resolve(dirContext, fileContext, url, getImportsToResolve(request), done);
         };
     }
 
@@ -124,15 +126,18 @@ module.exports = function (content) {
      * @param {Array} importsToResolve
      * @returns {object}
      */
-    function resolveSync(dirContext, originalImport, importsToResolve) {
+    function resolveSync(dirContext, fileContext, originalImport, importsToResolve) {
         var importToResolve = importsToResolve.shift();
         var resolvedFilename;
 
         if (!importToResolve) {
+            let fixedImport = originalImport;
+
+            if (!fixedImport.endsWith(".scss") && !fixedImport.endsWith(".css"))
+                fixedImport += ".scss"; // SCSS >3.4.0 doesn't like ambiguous extensions
+
             // No import possibilities left. Let's pass that one back to libsass...
-            return {
-                file: originalImport
-            };
+            return { file: fixedImport };
         }
 
         try {
@@ -159,14 +164,21 @@ module.exports = function (content) {
      * @param {Array} importsToResolve
      * @param {function} done
      */
-    function resolve(dirContext, originalImport, importsToResolve, done) {
+    function resolve(dirContext, fileContext, originalImport, importsToResolve, done) {
         var importToResolve = importsToResolve.shift();
 
         if (!importToResolve) {
-            // No import possibilities left. Let's pass that one back to libsass...
-            done({
-                file: originalImport
-            });
+            if (sassportImporter) {
+                sassportImporter(originalImport, fileContext, done);
+            } else {
+                let fixedImport = originalImport;
+
+                if (!fixedImport.endsWith(".scss") && !fixedImport.endsWith(".css"))
+                    fixedImport += ".scss"; // node-sass >3.4.0 doesn't like ambiguous extensions
+
+                // No import possibilities left. Let's pass that one back to libsass...
+                done({ file: fixedImport });
+            }
             return;
         }
 
@@ -228,6 +240,13 @@ module.exports = function (content) {
         }
     });
     var asyncSassJobQueue = async.queue(sassportInstance.render.bind(sassportInstance), threadPoolSize - 1);
+
+    if (isSync) {
+        this.emitWarning("Sassport modules are not supported in synchronous mode");
+    } else {
+        // Set up fallback importer to allow importing of sassport modules
+        sassportImporter = createSassportImporter(sassportInstance);
+    }
 
     // Skip empty files, otherwise it will stop webpack, see issue #21
     if (opt.data.trim() === '') {

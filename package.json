@@ -1,6 +1,6 @@
 {
   "name": "sassport-loader",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Use SassPort to render your Sass for WebPack! (sass-loader fork)",
   "main": "lib/loader.js",
   "files": [
@@ -28,22 +28,27 @@
     "type": "git",
     "url": "git://github.com/IngwiePhoenix/sassport-loader.git"
   },
-  "author": [
+  "authors": [
     "J. Tangelder",
     "Ingwie Phoenix <ingwie2000@gmail.com>",
+    "briman0094"
   ],
   "license": "MIT",
   "peerDependencies": {
     "node-sass": "^4.0.0",
     "webpack": "^2.0.0 || ^3.0.0 || ^4.0.0"
   },
+  "resolutions": {
+    "sassport/node-sass": "^4.0.0"
+  },
   "dependencies": {
     "neo-async": "^2.5.0",
     "loader-utils": "^1.0.1",
     "merge": "^1.2.0",
     "requirefresh": "^2.0.0",
-    "sassport": "^0.7.0",
+    "sassport": "^0.8.0",
     "clone-deep": "^2.0.1",
+    "node-sass": "^4.0.0"
     "lodash.tail": "^4.1.1",
     "pify": "^3.0.0"
   },
@@ -57,6 +62,7 @@
     "mocha": "^2.3.4",
     "node-sass": "^4.5.0",
     "raw-loader": "^0.5.1",
+    "sassport": "^0.8.0",
     "should": "^11.2.0",
     "standard-version": "^4.2.0",
     "style-loader": "^0.18.2",
