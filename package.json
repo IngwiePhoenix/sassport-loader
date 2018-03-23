@@ -2,7 +2,10 @@
   "name": "sassport-loader",
   "version": "0.2.0",
   "description": "Use SassPort to render your Sass for WebPack! (sass-loader fork)",
-  "main": "index.js",
+  "main": "lib/loader.js",
+  "files": [
+      "lib"
+  ],
   "scripts": {
     "create-spec": "node test/tools/runCreateSpec.js",
     "pretest": "node test/tools/runCreateSpec.js",
@@ -27,32 +30,37 @@
   },
   "author": [
     "J. Tangelder",
-    "Ingwie Phoenix <ingwie2000@gmail.com>"
+    "Ingwie Phoenix <ingwie2000@gmail.com>",
   ],
   "license": "MIT",
   "peerDependencies": {
-    "webpack": "^1.12.2"
+    "node-sass": "^4.0.0",
+    "webpack": "^2.0.0 || ^3.0.0 || ^4.0.0"
   },
   "dependencies": {
-    "async": "^1.5.0",
-    "loader-utils": "^0.2.12",
+    "neo-async": "^2.5.0",
+    "loader-utils": "^1.0.1",
     "merge": "^1.2.0",
     "requirefresh": "^2.0.0",
-    "sassport": "^0.7.0"
+    "sassport": "^0.7.0",
+    "clone-deep": "^2.0.1",
+    "lodash.tail": "^4.1.1",
+    "pify": "^3.0.0"
   },
   "devDependencies": {
     "bootstrap-sass": "^3.3.6",
     "css-loader": "^0.23.0",
-    "enhanced-require": "^0.5.0-beta6",
-    "extract-text-webpack-plugin": "^0.9.1",
+    "eslint": "^3.16.0",
+    "eslint-config-peerigon": "^9.0.0",
+    "eslint-plugin-jsdoc": "^2.4.0",
     "file-loader": "^0.8.5",
-    "jshint": "^2.9.1-rc1",
     "mocha": "^2.3.4",
+    "node-sass": "^4.5.0",
     "raw-loader": "^0.5.1",
-    "sassport": "^0.7.0",
-    "should": "^7.1.1",
-    "style-loader": "^0.13.0",
-    "webpack": "1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "should": "^11.2.0",
+    "standard-version": "^4.2.0",
+    "style-loader": "^0.18.2",
+    "webpack-dev-server": "^2.4.1",
+    "webpack-merge": "^4.0.0"
   }
 }

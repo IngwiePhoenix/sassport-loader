@@ -1,26 +1,35 @@
-'use strict';
+"use strict";
 
-var path = require('path');
-
-var pathToSassLoader = path.resolve(__dirname, '../../index.js');
+const path = require("path");
+const sassLoader = require.resolve("../../lib/loader");
 
 module.exports = {
-    entry: path.resolve(__dirname, '../scss/bootstrap-sass.scss'),
+    entry: path.resolve(__dirname, "../scss/bootstrap-sass.scss"),
     output: {
-        path: path.resolve(__dirname, '../output'),
-        filename: 'bundle.bootstrap-sass.js'
+        path: path.resolve(__dirname, "../output"),
+        filename: "bundle.bootstrap-sass.js"
     },
-    devtool: 'inline-source-map',
+    devtool: "source-map",
     module: {
-        loaders: [
-            {
-                test: /\.woff2?$|\.ttf$|\.eot$|\.svg$/,
-                loader: 'file'
-            },
-            {
-                test: /\.scss$/,
-                loader: 'style-loader!css-loader!' + pathToSassLoader
-            }
-        ]
+        rules: [{
+            test: /\.scss$/,
+            use: [{
+                loader: "style-loader"
+            }, {
+                loader: "css-loader"
+            }, {
+                loader: sassLoader,
+                options: {
+                    includePaths: [
+                        path.resolve(__dirname, "../scss/includePath")
+                    ]
+                }
+            }]
+        }, {
+            test: /\.woff2?$|\.ttf$|\.eot$|\.svg$/,
+            use: [{
+                loader: "file-loader"
+            }]
+        }]
     }
 };
