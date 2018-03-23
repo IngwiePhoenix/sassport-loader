@@ -1,6 +1,6 @@
 "use strict";
 
-const sassport = require('sassport');
+const sassport = require("sassport");
 const os = require("os");
 const fs = require("fs");
 const path = require("path");
@@ -52,7 +52,7 @@ function createSpec(ext) {
                 sassOptions.file = fileName;
             }
 
-            const css = sassport.renderSync(sassOptions).css;
+            const css = sassport().renderSync(sassOptions).css;
 
             fs.writeFileSync(path.join(basePath, "spec", fileWithoutExt + ".css"), css, "utf8");
         });

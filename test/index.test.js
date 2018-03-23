@@ -32,7 +32,7 @@ Object.defineProperty(loaderContextMock, "options", {
 });
 
 syntaxStyles.forEach(ext => {
-describe('sassport-loader', function () {
+    function execTest(testId, options) {
         return new Promise((resolve, reject) => {
             const baseConfig = merge({
                 entry: path.join(__dirname, ext, testId + "." + ext),
